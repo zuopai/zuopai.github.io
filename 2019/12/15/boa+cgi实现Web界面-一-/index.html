@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|16:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/iot.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/iot.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="boa+cgi,嵌入式学习," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="boa+cgi实现嵌入式的Web界面&amp;emsp;&amp;emsp;在嵌入式设备的管理和交互中,基于Web方式的应用是极其方便的,用户只需要使用Web浏览器通过嵌入式设备的IP地址对设备进行管理和监控.本次讲述我在工作中如何使用boa+cgi的方式实现嵌入式Web界面的显示.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="boa+cgi学习">
+<meta property="og:url" content="http://yoursite.com/2019/12/15/boa+cgi%E5%AE%9E%E7%8E%B0Web%E7%95%8C%E9%9D%A2-%E4%B8%80-/index.html">
+<meta property="og:site_name" content="佐派の个人站">
+<meta property="og:description" content="boa+cgi实现嵌入式的Web界面&amp;emsp;&amp;emsp;在嵌入式设备的管理和交互中,基于Web方式的应用是极其方便的,用户只需要使用Web浏览器通过嵌入式设备的IP地址对设备进行管理和监控.本次讲述我在工作中如何使用boa+cgi的方式实现嵌入式Web界面的显示.">
+<meta property="article:published_time" content="2019-12-15T09:30:29.000Z">
+<meta property="article:modified_time" content="2021-04-01T14:42:38.819Z">
+<meta property="article:author" content="Mr.佐">
+<meta property="article:tag" content="boa+cgi">
+<meta property="article:tag" content="嵌入式学习">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":20,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/15/boa+cgi实现Web界面-一-/"/>
+
+
+
+
+
+  <title>boa+cgi学习 | 佐派の个人站</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">佐派の个人站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">无折腾，不疯魔！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/15/boa+cgi%E5%AE%9E%E7%8E%B0Web%E7%95%8C%E9%9D%A2-%E4%B8%80-/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mr.佐">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/author.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="佐派の个人站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">boa+cgi学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-15T17:30:29+08:00">
+                2019-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.9k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="boa-cgi实现嵌入式的Web界面"><a href="#boa-cgi实现嵌入式的Web界面" class="headerlink" title="boa+cgi实现嵌入式的Web界面"></a>boa+cgi实现嵌入式的Web界面</h1><p>&emsp;&emsp;在嵌入式设备的管理和交互中,基于Web方式的应用是极其方便的,用户只需要使用Web浏览器通过嵌入式设备的IP地址对设备进行管理和监控.本次讲述我在工作中如何使用boa+cgi的方式实现嵌入式Web界面的显示.</p>
+<hr>
+<a id="more"></a>
+<h2 id="boa服务器的安装与配置"><a href="#boa服务器的安装与配置" class="headerlink" title="boa服务器的安装与配置"></a>boa服务器的安装与配置</h2><p>&emsp;&emsp;boa是一款轻量级web服务器.支持cgi编程,广泛应用在嵌入式领域.将我在网上找到的boa服务器共享在这里:链接: <a href="https://pan.baidu.com/s/1z22BmiuhC8WF_eZravHUSg" target="_blank" rel="noopener">https://pan.baidu.com/s/1z22BmiuhC8WF_eZravHUSg</a> 提取码: g31s</p>
+<!--more--->
+
+<h3 id="boa服务器安装与移植"><a href="#boa服务器安装与移植" class="headerlink" title="boa服务器安装与移植"></a>boa服务器安装与移植</h3><ul>
+<li><p><strong>将boa的压缩包下载并放置在指定的文件夹下,使用终端cd到指定的文件夹下</strong></p>
+</li>
+<li><p><strong>解压boa服务器压缩包</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> tar zxvf boa-0.94.14rc21.tar.gz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> boa-0.94.14rc21/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>生成makefile文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./configure</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> src/</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;此时会在boa的根目录和src目录下生成Makefile文件,如果你打开就会发现,boa根目录的Makefile其实就是到src/目录下运行src目录下的Makefile文件,所以,我们只需要修改src/目录下的文件即可.</p>
+</li>
+<li><p><strong>修改相应配置文件</strong></p>
+</li>
+</ul>
+<p>1.修改makefile中的编译器为嵌入式设备对应的交叉编译器<br>需要将src/目录下的Makefile文件中的编译器修改为所使用的交叉编译器<br>如:我的嵌入式设备是powerpc系列芯片,需要使用对应的ppc交叉编译器.若使用arm系列则修改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CC = gcc ==&gt; CC = arm-linux-gcc</span><br><span class="line">CPP = gcc -E ==&gt; CPP = arm-linux-gcc -E</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;2.修改define.h文件<br>&emsp;&emsp;需要将两个地方设置成你需要放入的嵌入式设备的路径.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SERVER_ROOT <span class="meta-string">"/boa"</span></span></span><br><span class="line"><span class="comment">//我将路径修改为/mynand/boa,也就是我嵌入式设备中boa服务器存放的位置.</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MIME_TYPES_DEFAULT <span class="meta-string">"/etc/mime.types"</span></span></span><br><span class="line"><span class="comment">//我将路径修改为/mynand/boa/mime.types,也就是我嵌入式设备中boa服务器存放的位置.</span></span><br><span class="line"><span class="comment">//此处需要说明的是,我们linux系统下在etc目录下会有一个mime.type文件,而在嵌入式设备中没有次文件,因此需要将mime.type文件copy到嵌入式设备中,所以修改此处指定此文件路径.</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;3.修改boa.c文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注释掉此处可使用/*---*/</span></span><br><span class="line"><span class="keyword">if</span> (setuid(<span class="number">0</span>) != <span class="number">-1</span>) &#123;</span><br><span class="line">            DIE(<span class="string">"icky Linux kernel bug!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;4.修改compat.h文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIMEZONE_OFFSET(foo) foo##-&gt;tm_gmtoff </span></span><br><span class="line"><span class="comment">//将上面的##删除,如下:</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIMEZONE_OFFSET(foo) foo-&gt;tm_gmtoff</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>make编译文件</strong><br>&emsp;&emsp;由于boa根目录和src/目录下的Makefile是一样的功能,因此可以选择在src目录下make,由此,需要的文件已经生成,boa服务器移植需要一下几种文件.<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">boa                     <span class="comment">//boa服务器文件夹</span></span><br><span class="line">├── boa                 <span class="comment">//boa服务器可执行文件</span></span><br><span class="line">├── boa.conf            <span class="comment">//boa服务器配置文件,可在example/目录下找到,后续会详细说明</span></span><br><span class="line">├── boa_indexer         <span class="comment">//boa服务器所需文件</span></span><br><span class="line">├── cgi-bin             <span class="comment">//存放cgi文件,也可以将此文件夹放置在www文件夹中</span></span><br><span class="line">├── <span class="built_in">log</span>                 <span class="comment">//存放log日志文件的目录</span></span><br><span class="line">├── mime.types          <span class="comment">//是用于识别类型的文件,将linux下的etc/mime.type复制进来</span></span><br><span class="line">└── www                 <span class="comment">//存放静态html网页文件的目录</span></span><br></pre></td></tr></table></figure>
+<h3 id="boa服务器配置"><a href="#boa服务器配置" class="headerlink" title="boa服务器配置"></a>boa服务器配置</h3>&emsp;&emsp;将上面生成的boa文件夹放置在嵌入式设备对应路径下,然后主要是对boa.conf文件进行修改.<br>&emsp;&emsp;boa.conf文件详细说明:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//#监听的端口号，缺省都是80.设置80端口时,登录web时只需要输入ip地址就可登录</span></span><br><span class="line"><span class="comment">//#设置其他端口,如8080时,就需要输入IP地址:8080登录</span></span><br><span class="line">Port <span class="number">80</span></span><br><span class="line"><span class="comment">//#作为哪个用户运行，即它拥有该用户的权限，一般都是nobody，需要/etc/passwd 中有</span></span><br><span class="line"><span class="comment">//#nobody用户 此处我设置为0,即都有权限</span></span><br><span class="line">User <span class="number">0</span></span><br><span class="line"><span class="comment">//#作为哪个用户组运行，即它拥有该用户组的权限，一般都是nogroup，需要在/etc/group 文</span></span><br><span class="line"><span class="comment">//#件中有nogroup组 此处我设置为0,即都有权限 </span></span><br><span class="line">Group <span class="number">0</span></span><br><span class="line"><span class="comment">//#错误日志文件。如果没有以/开始，则表示从服务器的根路径开始。如果不需要错误日志，则用</span></span><br><span class="line"><span class="comment">//#/dev/null。在下面设置时，注意一定要建立/var/log/boa目录,此处我不需要日志,直接注释</span></span><br><span class="line"><span class="comment">//#ErrorLog /var/log/boa/error_log</span></span><br><span class="line"><span class="comment">//#访问日志文件。如果没有以/开始，则表示从服务器的根路径开始。如果不需要错误日志，则用</span></span><br><span class="line"><span class="comment">//#/dev/null 或直接注释掉。在下面设置时，注意一定要建立/var/log/boa 目录,同上</span></span><br><span class="line"><span class="comment">//#AccessLog /var/log/boa/access_log</span></span><br><span class="line"><span class="comment">//#服务器名字 这里就随意了</span></span><br><span class="line">ServerName www.hyesco.com</span><br><span class="line"><span class="comment">//#是否启动虚拟主机功能，即设备可以有多个网络接口，每个接口都可以拥有一个虚拟的Web 服</span></span><br><span class="line"><span class="comment">//#务器。一般注释掉，即不需要启动</span></span><br><span class="line"><span class="comment">//#VirtualHost</span></span><br><span class="line"><span class="comment">//#HTML文档的主目录。如果没有以/开始，则表示从服务器的根路径开始。设置成自己路径</span></span><br><span class="line">DocumentRoot /mynand/boa/www</span><br><span class="line"><span class="comment">//#如果收到一个用户请求的话，在用户主目录后再增加的目录名</span></span><br><span class="line">UserDir public_html</span><br><span class="line"><span class="comment">//#HTML目录索引的文件名,设置成访问时的第一个html文件</span></span><br><span class="line">DirectoryIndex Login.html</span><br><span class="line"><span class="comment">//#当HTML 目录没有索引文件时，用户只指明访问目录时，boa 会调用该程序生成索引文件然后</span></span><br><span class="line"><span class="comment">//#返回给用户，因为该过程比较慢最好不执行，可以注释掉或者给每个HTML 目录加上</span></span><br><span class="line"><span class="comment">//#DirectoryIndex 指明的文件</span></span><br><span class="line"><span class="comment">//#DirectoryMaker /usr/lib/boa/boa_indexer</span></span><br><span class="line"><span class="comment">//#如果DirectoryIndex 不存在，并且DirectoryMaker 被注释，那么就用Boa 自带的索引</span></span><br><span class="line"><span class="comment">//#生成程序来生成目录的索引文件并输出到下面目录，该目录必须是Boa 能读写</span></span><br><span class="line"><span class="comment">//# DirectoryCache /var/spool/boa/dircache</span></span><br><span class="line"><span class="comment">//#一个连接所允许的HTTP 持续作用请求最大数目，注释或设为0 都将关闭HTTP 持续作用</span></span><br><span class="line">KeepAliveMax <span class="number">1000</span></span><br><span class="line"><span class="comment">//#HTTP 持续作用中服务器在两次请求之间等待的时间数，以秒为单位，超时将关闭连接</span></span><br><span class="line">KeepAliveTimeout <span class="number">10</span></span><br><span class="line"><span class="comment">//#指明mime.types 文件位置。如果没有以/开始，则表示从服务器的根路径开始。可以注释掉</span></span><br><span class="line"><span class="comment">//#避免使用mime.types 文件，此时需要用AddType 在本文件里指明</span></span><br><span class="line">MimeTypes /mynand/boa/mime.types</span><br><span class="line"><span class="comment">//#文件扩展名没有或未知的话，使用的缺省MIME 类型</span></span><br><span class="line">DefaultType <span class="built_in">text</span>/html</span><br><span class="line"><span class="comment">//#提供CGI 程序的PATH 环境变量值</span></span><br><span class="line">CGIPath /bin:/usr/bin:/usr/local/bin</span><br><span class="line"><span class="comment">//#将文件扩展名和MIME 类型关联起来，和mime.types 文件作用一样。如果用mime.types</span></span><br><span class="line"><span class="comment">//#文件，则注释掉，如果不使用mime.types 文件，则必须使用</span></span><br><span class="line"><span class="comment">//#AddType application/x-httpd-cgi cgi</span></span><br><span class="line"><span class="comment">//#指明文档重定向路径</span></span><br><span class="line"><span class="comment">//#Redirect /bar http://elsewhere/feh/bar</span></span><br><span class="line"><span class="comment">//#为路径加上别名</span></span><br><span class="line">Alias /doc /usr/doc</span><br><span class="line"><span class="comment">//#非常重要，指明CGI 脚本的虚拟路径对应的实际路径。一般所有的CGI 脚本都要放在实际路径</span></span><br><span class="line"><span class="comment">//#里，用户访问执行时输入站点+虚拟路径+CGI 脚本名</span></span><br><span class="line">ScriptAlias /cgi-bin/ /mynand/boa/cgi-bin/</span><br></pre></td></tr></table></figure>
+&emsp;&emsp;boa.conf文件的配置很重要,主要就是将对应文件的路径设置好就ok.<br>&emsp;&emsp;最后在boa文件夹下直接运行boa文件即可:</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./boa</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;可以将boa的运行放置到开机自启,即实现开机可登录.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/boa-cgi/" rel="tag"><i class="fa fa-tag"></i> boa+cgi</a>
+          
+            <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag"><i class="fa fa-tag"></i> 嵌入式学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/08/Hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-md/" rel="next" title="Hexo学习">
+                <i class="fa fa-chevron-left"></i> Hexo学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/author.jpg"
+                alt="Mr.佐" />
+            
+              <p class="site-author-name" itemprop="name">Mr.佐</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#boa-cgi实现嵌入式的Web界面"><span class="nav-number">1.</span> <span class="nav-text">boa+cgi实现嵌入式的Web界面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#boa服务器的安装与配置"><span class="nav-number">1.1.</span> <span class="nav-text">boa服务器的安装与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boa服务器安装与移植"><span class="nav-number">1.1.1.</span> <span class="nav-text">boa服务器安装与移植</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boa服务器配置"><span class="nav-number">1.1.2.</span> <span class="nav-text">boa服务器配置</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2020 &mdash; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr.佐</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
